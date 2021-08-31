@@ -16,6 +16,7 @@ import { SERVER_URL } from './constants';
 import Orders from './pages/Orders';
 axios.defaults.withCredentials = true;
 function App() {
+
   const [user, setUser] = useState<User | undefined>(undefined);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
