@@ -74,6 +74,15 @@ export class ProductController implements GenericController {
 
 
     }
+    async delete(request: Request, response: Response) {
+        const id = Number(request.params.id);
+        if (!id || isNaN(id)) {
+            response.sendStatus(400);
+            return;
+        }
+        await getRepository(Product).delete(id);
+        response.sendStatus(204);
+    }
 }
 
 const controller = new ProductController();

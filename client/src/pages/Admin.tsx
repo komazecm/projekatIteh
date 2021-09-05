@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
-import { Container, Form, Grid, Ref, Table } from 'semantic-ui-react';
+import { Button, Container, Form, Grid, Ref, Table } from 'semantic-ui-react';
 import { Cart, Product, ProductCategory } from '../model';
 axios.defaults.withCredentials = true;
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
     categories: ProductCategory[],
     updateProduct: (id: number, name: string, price: number, category: number, description: string) => Promise<any>
     createProduct: (formData: FormData) => Promise<any>,
+    deleteProduct: (id: number) => Promise<any>,
     carts: Cart[]
 }
 
@@ -126,6 +127,16 @@ export default function Admin(props: Props) {
                             }} label='Description' />
                             <Form.Button fluid>Save</Form.Button>
                         </Form>
+                        {
+                            selectedProductIndex > -1 && (
+                                <Button fluid negative onClick={() => {
+                                    const id = props.products[selectedProductIndex].id;
+                                    props.deleteProduct(id).then(() => {
+                                        setselectedProductIndex(-1);
+                                    })
+                                }}>Delete</Button>
+                            )
+                        }
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row centered>

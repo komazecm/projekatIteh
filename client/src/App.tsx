@@ -88,6 +88,13 @@ function App() {
       return [...prev, res.data];
     })
   }
+
+  const deleteProduct = async (id: number) => {
+    await axios.delete(SERVER_URL + '/product/' + id);
+    setProducts(prev => {
+      return prev.filter(element => element.id !== id)
+    })
+  }
   useEffect(() => {
     (async function () {
       try {
@@ -111,7 +118,7 @@ function App() {
         setCarts(cartsRes.data);
 
 
-      } catch (error) {
+      } catch (error: any) {
         console.log(error.response);
       }
 
@@ -168,7 +175,7 @@ function App() {
         <Route path='/admin'>
           {
             (user && user.category === 'admin') ? (
-              <Admin carts={carts} products={products} createProduct={createProduct} updateProduct={updateProduct} categories={categories} />
+              <Admin deleteProduct={deleteProduct} carts={carts} products={products} createProduct={createProduct} updateProduct={updateProduct} categories={categories} />
             ) : (
               <Redirect to='/login' />
             )

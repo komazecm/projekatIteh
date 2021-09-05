@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Dropdown, DropdownItemProps, Grid } from 'semantic-ui-react';
+import { CardGroup, Container, Dropdown, DropdownItemProps, Form, Grid, Header, Label } from 'semantic-ui-react';
 import ProductItem from '../components/ProductItem';
 import { Product, ProductCategory } from '../model';
 
@@ -14,80 +14,92 @@ export default function Products(props: Props) {
 
 
 
-    const [sort, setSort] = useState(-1);
-    const [categoryId, setCategoryId] = useState(-1);
-    const chunks = (products: Product[]) => {
+    const [sort, setSort] = useState(1);
+    const [categoryId, setCategoryId] = useState(0);
+    const totalMinPrice = (props.products.length === 0) ? 0 : props.products.reduce((min, element) => {
+        return Math.min(min, element.price)
+    }, props.products[0].price)
+    const totalMaxPrice = (props.products.length === 0) ? 0 : props.products.reduce((max, element) => {
+        return Math.max(max, element.price)
+    }, props.products[0].price)
+    const [minPrice, setMinPrice] = useState(totalMinPrice);
+    const [maxPrice, setMaxPrice] = useState(totalMaxPrice);
+    const [name, setName] = useState('')
 
-        const res = [];
-        const brojRedova = Math.ceil(products.length / 4);
-
-        for (let i = 0; i < brojRedova; i++) {
-            const m = Math.min(4 * (i + 1), products.length);
-            console.log(m);
-            res[i] = products.slice(i * 4, m);
-        }
-        return res;
-    }
 
     return (
         <Container >
-            <Grid padded >
-                <Grid.Row columns='16' >
-                    <Grid.Column width='12' >
-                        <Dropdown selection value={categoryId} placeholder='Category...' options={[{
-                            text: 'All products',
-                            key: -1,
-                            value: -1,
-                            onClick: () => { setCategoryId(-1) }
-                        },
-                        ...props.categories.map((element): DropdownItemProps => {
-                            return {
-                                text: element.name,
-                                value: element.id,
-                                key: element.id,
-                                onClick: () => { setCategoryId(element.id) }
-                            }
-                        })
-                        ]} />
-                    </Grid.Column>
-                    <Grid.Column width='4'   >
-                        <Dropdown fluid selection value={sort} placeholder='Sort...' options={[{
-                            text: 'Price ascending',
+            <Grid padded columns='16' >
+                <Grid.Row centered>
+                    <Grid.Column style={{ background: 'white', padding: '4%', borderRadius: '10px' }} width='4' >
+                        <Header>Sort products</Header>
+                        <Dropdown selection value={sort} options={[{
                             key: 1,
                             value: 1,
+                            text: 'Price ascending',
                             onClick: () => { setSort(1) }
                         }, {
-                            text: 'Price descending',
                             key: 2,
                             value: -1,
+                            text: 'Price descending',
                             onClick: () => { setSort(-1) }
                         }]} />
-                    </Grid.Column>
+                        <Form style={{ marginTop: '20px' }} >
+                            <Header>Search products</Header>
+                            <Form.Input value={name} onChange={e => {
+                                const value = e.currentTarget.value;
+                                setName(value);
+                            }} fluid label='Name' />
+                            <Form.Dropdown value={categoryId} clearable onChange={(e, data) => {
+                                setCategoryId((data.value || 0) as number);
+                            }} selection label='Category' options={props.categories.map(element => {
+                                return {
+                                    key: element.id,
+                                    value: element.id,
+                                    text: element.name,
 
-                </Grid.Row>
-                {
-                    chunks(props.products
-                        .filter(element => categoryId === -1 || element.productCategory.id === categoryId)
-                        .sort((a, b) => {
-                            return sort * (a.price - b.price)
-                        })
-                    )
-                        .map(element => {
-                            return (<Grid.Row columns='16'>
-                                {
-                                    element.map(product => {
-                                        return (
-                                            <Grid.Column key={product.id} width='4' >
-                                                <ProductItem product={product} addOrder={() => {
-                                                    props.addOrder(product);
-                                                }} />
-                                            </Grid.Column>
-                                        )
-                                    })
                                 }
-                            </Grid.Row>)
-                        })
-                }
+                            })} />
+                            <Form.Field>
+
+                                <Form.Input onChange={(e) => {
+                                    const value = Number(e.currentTarget.value);
+                                    if (value < maxPrice) {
+                                        setMinPrice(value);
+                                    }
+                                }} value={minPrice} inline type='range' label='Min price' min={totalMinPrice} max={totalMaxPrice} />
+                                {minPrice}
+                            </Form.Field>
+                            <Form.Field>
+
+                                <Form.Input onChange={(e) => {
+                                    const value = Number(e.currentTarget.value);
+                                    if (value > minPrice) {
+                                        setMaxPrice(value);
+                                    }
+                                }} value={maxPrice} inline type='range' label='Max price' min={totalMinPrice} max={totalMaxPrice} />
+                                {maxPrice}
+                            </Form.Field>
+                        </Form>
+                    </Grid.Column>
+                    <Grid.Column width='12'>
+                        <CardGroup itemsPerRow='3' >
+                            {
+                                props.products.filter(element => {
+                                    return element.name.includes(name) && (categoryId === 0 || element.productCategory.id === categoryId) && element.price >= minPrice && element.price <= maxPrice
+                                }).sort((a, b) => {
+                                    return sort * (a.price - b.price)
+                                }).map(element => {
+                                    return (
+                                        <ProductItem key={element.id} product={element} addOrder={() => {
+                                            props.addOrder(element, 1);
+                                        }} />
+                                    )
+                                })
+                            }
+                        </CardGroup>
+                    </Grid.Column>
+                </Grid.Row>
             </Grid>
         </Container>
     )

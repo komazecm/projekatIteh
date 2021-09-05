@@ -42,6 +42,11 @@ export const Routes: Route[] = [{
     controller: ProductController,
     method: 'patch',
     route: '/product/:id'
+}, {
+    action: 'delete',
+    controller: ProductController,
+    method: 'delete',
+    route: '/product/:id'
 },
 {
     action: 'all',
