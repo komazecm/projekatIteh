@@ -1,0 +1,13 @@
+{
+  "name": "prodavnica",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "install:all": "cd ./server && yarn && cd ../client && yarn",
+    "start:server": "cd ./server && yarn start ",
+    "start:client": "cd ./client && yarn start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
