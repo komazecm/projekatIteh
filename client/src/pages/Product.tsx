@@ -12,7 +12,7 @@ export default withRouter(function Product(props: RouteComponentProps & Props) {
     const product = props.getProduct(parseInt((props.match.params as any).id));
     if (!product) {
         return (
-            <div>No such product with given id</div>
+            <div>Ne postoji proizvod sa datim ID-em.</div>
         )
     }
     return (

@@ -49,7 +49,7 @@ export default function Navbar(props: Props) {
         <Menu inverted color='black' borderless fluid>
             <Menu.Item icon={selectIcon(weather ? weather.weather : '')} />
             {error === '' ? (<Menu.Item className='inverted' >
-                Temrature {(weather) ? `min: ${weather.temp2m.min}    max: ${weather.temp2m.max}C` : 'connecting'}
+                Temperature {(weather) ? `min: ${weather.temp2m.min}    max: ${weather.temp2m.max}C` : 'connecting'}
             </Menu.Item>) : (
                 <Menu.Item className='inverted'>
                     {error}
@@ -58,13 +58,13 @@ export default function Navbar(props: Props) {
             {
                 props.full ? (
                     <>
-                        <Menu.Item as={Link} color='yellow' to='/'>Home</Menu.Item>
-                        <Menu.Item as={Link} to='/products'>Products</Menu.Item>
+                        <Menu.Item as={Link} color='yellow' to='/'>Početna</Menu.Item>
+                        <Menu.Item as={Link} to='/products'>Proizvodi</Menu.Item>
                         {
                             props.admin && (
                                 <>
                                     <Menu.Item as={Link} to='/admin'>Admin</Menu.Item>
-                                    <Menu.Item as={Link} to='/orders'>Orders</Menu.Item>
+                                    <Menu.Item as={Link} to='/orders'>Porudžbine</Menu.Item>
                                 </>
                             )
                         }
@@ -79,10 +79,10 @@ export default function Navbar(props: Props) {
                     </>
                 ) : (
                     <Menu.Menu position='right'>
-                        <Menu.Item as={Link} to='/login'>Login</Menu.Item>
+                        <Menu.Item as={Link} to='/login'>Ulogujte se</Menu.Item>
 
 
-                        <Menu.Item as={Link} to='/register'>Register</Menu.Item>
+                        <Menu.Item as={Link} to='/register'>Registracija</Menu.Item>
                     </Menu.Menu>
                 )
             }
